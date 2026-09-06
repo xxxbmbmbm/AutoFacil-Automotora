@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoFacil | Automotora</title>
+  <meta name="description" content="AutoFacil, automotora: encuentra tu próximo vehículo de forma fácil, rápida y segura." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="icon" href="images/logo.png">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg barra-navegacion sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="images/logo.png" alt="Logo AutoFacil">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="vehiculos.html">Vehículos</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="nosotros.html">Acerca de nosotros</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="contacto.html">Contacto</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link boton-sesion" href="#" id="enlace-sesion" data-bs-toggle="modal" data-bs-target="#modal-inicio-sesion">
+              👤 Iniciar sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <header class="seccion-hero">
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <p class="etiqueta-seccion text-uppercase" style="color:#ff5aa8;">Automotora de confianza</p>
+          <h1 class="titulo-hero mb-3">Encuentra tu próximo auto <span>de forma fácil</span></h1>
+          <p class="subtitulo-hero mb-4">
+            En AutoFacil reunimos vehículos nuevos y usados de distintas marcas en un solo
+            lugar, con información clara y un equipo real detrás para ayudarte a elegir.
+          </p>
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="vehiculos.html" class="boton-principal">Ver vehículos</a>
+            <a href="contacto.html" class="boton-secundario" style="border-color:#fff; color:#fff;">Contáctanos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="franja-seccion">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+        <div>
+          <p class="etiqueta-seccion mb-1">Vitrina</p>
+          <h2 class="mb-0">Algunos de nuestros vehículos</h2>
+        </div>
+        <a href="vehiculos.html" class="fw-semibold texto-rosa">Ver catálogo completo &rarr;</a>
+      </div>
+      <div class="row g-3" id="contenedor-galeria-inicio">
+      </div>
+    </div>
+  </section>
+  <section class="seccion-marcas">
+    <div class="container">
+      <div class="text-center mb-4">
+        <p class="etiqueta-seccion mb-1">Nuestros aliados</p>
+        <h2>Marcas con las que trabajamos</h2>
+      </div>
+      <div class="row g-3" id="contenedor-marcas">
+      </div>
+    </div>
+  </section>
+  <section class="franja-seccion" style="background-color:#eef0f3;">
+    <div class="container">
+      <div class="row g-4 text-center">
+        <div class="col-md-4">
+          <span class="fs-1 texto-rosa">🛡️</span>
+          <h5 class="mt-3">Compra segura</h5>
+          <p class="text-muted mb-0">Todos nuestros vehículos son revisados antes de salir a la venta.</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fs-1 texto-rosa">🏷️</span>
+          <h5 class="mt-3">Precios claros</h5>
+          <p class="text-muted mb-0">Sin letra chica ni costos escondidos, con ofertas destacadas.</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fs-1 texto-rosa">🎧</span>
+          <h5 class="mt-3">Asesoría real</h5>
+          <p class="text-muted mb-0">Un equipo de personas listo para ayudarte a decidir mejor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="franja-seccion text-center">
+    <div class="container">
+      <h2 class="mb-3">¿Listo para encontrar tu próximo vehículo?</h2>
+      <p class="text-muted mb-4">Revisa el catálogo completo o escríbenos y te ayudamos a elegir.</p>
+      <a href="vehiculos.html" class="boton-principal">Explorar catálogo</a>
+    </div>
+  </section>
+
+  <div class="modal fade" id="modal-inicio-sesion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Iniciar sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formulario-inicio-sesion" novalidate>
+            <div class="mb-3">
+              <label for="sesion-correo" class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" id="sesion-correo" required>
+              <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="sesion-clave" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="sesion-clave" required minlength="6">
+              <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+            </div>
+            <button type="submit" class="boton-principal w-100">Ingresar</button>
+            <p class="text-muted small mt-3 mb-0">Formulario de demostración: no se almacena ningún dato real.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie-pagina">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-md-6">
+          <div class="logo-pie mb-2"><img src="images/logo.png" alt="Logo AutoFacil"></div>
+          <p class="small mb-0">Tu automotora de confianza para comprar y vender vehículos de forma fácil.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-white mb-3">Contacto</h6>
+          <p class="small mb-1">📍 Av. Principal 1234, Santiago</p>
+          <p class="small mb-1">☎️ +56 9 1234 5678</p>
+          <p class="small mb-0">✉️ contacto@autofacil.cl</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/datos-vehiculos.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/inicio.js"></script>
+</body>
+</html>

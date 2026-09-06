@@ -1,0 +1,458 @@
+:root {
+  --color-negro: #141416;
+  --color-negro-suave: #1f1f23;
+  --color-rosa: #e6127d;
+  --color-rosa-fuerte: #c40e69;
+  --color-rosa-claro: #ff5aa8;
+  --color-plata: #c7ccd4;
+  --color-fondo: #f6f6f8;
+  --color-texto: #23232a;
+  --fuente-titulos: "Segoe UI", Arial, sans-serif;
+  --fuente-texto: "Segoe UI", Arial, sans-serif;
+  --radio-borde: 10px;
+  --sombra-suave: 0 6px 20px rgba(20, 20, 22, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fuente-texto);
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+}
+
+h1, h2, h3, h4, h5,
+.titulo-seccion,
+.navbar-brand {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.barra-navegacion {
+  background-color: var(--color-negro);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.barra-navegacion .navbar-brand img {
+  height: 42px;
+  width: auto;
+}
+
+.barra-navegacion .nav-link {
+  color: var(--color-plata) !important;
+  font-weight: 600;
+  padding: 0.5rem 1rem !important;
+  transition: color 0.2s ease;
+}
+
+.barra-navegacion .nav-link.active,
+.barra-navegacion .nav-link:hover {
+  color: var(--color-rosa-claro) !important;
+}
+
+.boton-sesion {
+  border: 1.5px solid var(--color-rosa);
+  color: var(--color-rosa-claro) !important;
+  border-radius: 999px;
+  padding: 0.4rem 1.1rem !important;
+}
+
+.boton-sesion:hover {
+  background-color: var(--color-rosa);
+  color: #fff !important;
+}
+
+.boton-principal {
+  background-color: var(--color-rosa);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.7rem 1.8rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.boton-principal:hover {
+  background-color: var(--color-rosa-fuerte);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.boton-secundario {
+  background-color: transparent;
+  border: 1.5px solid var(--color-negro);
+  color: var(--color-negro);
+  font-weight: 600;
+  padding: 0.65rem 1.7rem;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.boton-secundario:hover {
+  background-color: var(--color-negro);
+  color: #fff;
+}
+
+.seccion-hero {
+  background: linear-gradient(120deg, var(--color-negro) 55%, var(--color-negro-suave) 100%);
+  color: #fff;
+  padding: 5rem 0 4.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.seccion-hero::after {
+  content: "";
+  position: absolute;
+  right: -10%;
+  top: -30%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(230, 18, 125, 0.35) 0%, rgba(230, 18, 125, 0) 70%);
+}
+
+.seccion-hero .subtitulo-hero {
+  color: var(--color-plata);
+  font-size: 1.1rem;
+  max-width: 520px;
+}
+
+.seccion-hero .titulo-hero {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 1.05;
+}
+
+.seccion-hero .titulo-hero span {
+  color: var(--color-rosa-claro);
+}
+
+.tarjeta-galeria {
+  background-color: #fff;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-suave);
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.tarjeta-galeria:hover {
+  transform: translateY(-4px);
+}
+
+.icono-vehiculo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.4rem;
+  color: #fff;
+  overflow: hidden;
+}
+
+.foto-vehiculo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tarjeta-galeria .cuerpo-tarjeta {
+  padding: 1rem 1.1rem 1.2rem;
+}
+
+.tarjeta-galeria .marca-modelo {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.1rem;
+}
+
+.tarjeta-galeria .precio-vehiculo {
+  color: var(--color-rosa-fuerte);
+  font-weight: 700;
+}
+
+.seccion-marcas {
+  background-color: #fff;
+  padding: 3.5rem 0;
+}
+
+.insignia-marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  border: 1.5px solid #e5e5ea;
+  border-radius: var(--radio-borde);
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-negro);
+  background-color: var(--color-fondo);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.insignia-marca:hover {
+  border-color: var(--color-rosa);
+  color: var(--color-rosa-fuerte);
+}
+
+.franja-seccion {
+  padding: 4rem 0;
+}
+
+.etiqueta-seccion {
+  color: var(--color-rosa-fuerte);
+  font-weight: 700;
+  font-family: var(--fuente-titulos);
+  font-size: 0.95rem;
+}
+
+.panel-filtros {
+  background-color: #fff;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-suave);
+  padding: 1.4rem;
+}
+
+.panel-filtros label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tarjeta-vehiculo {
+  background-color: #fff;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-suave);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cabecera-vehiculo {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.6rem;
+  color: #fff;
+}
+
+.insignia-promocion {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  background-color: var(--color-rosa);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.insignia-tipo {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  background-color: rgba(20, 20, 22, 0.65);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.tarjeta-vehiculo .cuerpo-tarjeta {
+  padding: 1.1rem 1.2rem 1.3rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-vehiculo .marca-modelo {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.15rem;
+}
+
+.tarjeta-vehiculo .detalle-vehiculo {
+  color: #6b6b74;
+  font-size: 0.88rem;
+  margin-bottom: 0.7rem;
+}
+
+.tarjeta-vehiculo .precio-vehiculo {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-negro);
+  margin-top: auto;
+}
+
+.tarjeta-vehiculo .precio-anterior {
+  color: #a0a0a8;
+  text-decoration: line-through;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-right: 0.4rem;
+}
+
+.boton-comprar {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-rosa);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.boton-comprar:hover {
+  background-color: var(--color-rosa-fuerte);
+  color: #fff;
+}
+
+.boton-eliminar-vehiculo {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
+  border: 1.5px solid #d33a3a;
+  color: #d33a3a;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.boton-eliminar-vehiculo:hover {
+  background-color: #d33a3a;
+  color: #fff;
+}
+
+.foto-resumen-compra {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radio-borde);
+}
+
+.mensaje-sin-resultados {
+  display: none;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b6b74;
+}
+
+.linea-tiempo {
+  border-left: 3px solid var(--color-rosa);
+  padding-left: 1.5rem;
+}
+
+.hito-tiempo {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.hito-tiempo::before {
+  content: "";
+  position: absolute;
+  left: -1.94rem;
+  top: 0.25rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-rosa);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px var(--color-rosa);
+}
+
+.tarjeta-valor {
+  background-color: #fff;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-suave);
+  padding: 1.6rem;
+  height: 100%;
+}
+
+.tarjeta-valor .icono-valor {
+  font-size: 1.8rem;
+  color: var(--color-rosa);
+  margin-bottom: 0.6rem;
+}
+
+.tarjeta-contacto {
+  background-color: #fff;
+  border-radius: var(--radio-borde);
+  box-shadow: var(--sombra-suave);
+  padding: 2rem;
+}
+
+.dato-contacto {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+}
+
+.dato-contacto i {
+  color: var(--color-rosa);
+  font-size: 1.3rem;
+  margin-top: 0.2rem;
+}
+
+.form-control:focus {
+  border-color: var(--color-rosa);
+  box-shadow: 0 0 0 0.2rem rgba(230, 18, 125, 0.15);
+}
+
+.pie-pagina {
+  background-color: var(--color-negro);
+  color: var(--color-plata);
+  padding: 2.6rem 0;
+}
+
+.pie-pagina a {
+  color: var(--color-plata);
+}
+
+.pie-pagina a:hover {
+  color: var(--color-rosa-claro);
+}
+
+.pie-pagina .logo-pie img {
+  height: 38px;
+}
+
+.texto-rosa {
+  color: var(--color-rosa-fuerte);
+}
+
+@media (max-width: 767.98px) {
+  .seccion-hero {
+    padding: 3.2rem 0 3rem;
+    text-align: center;
+  }
+  .seccion-hero .subtitulo-hero {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .franja-seccion {
+    padding: 2.6rem 0;
+  }
+}

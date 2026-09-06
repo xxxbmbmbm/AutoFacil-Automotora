@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acerca de nosotros | AutoFacil</title>
+  <meta name="description" content="Conoce la historia, la misión y los valores de AutoFacil." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="icon" href="images/logo.png">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg barra-navegacion sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="images/logo.png" alt="Logo AutoFacil">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="vehiculos.html">Vehículos</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="nosotros.html">Acerca de nosotros</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="contacto.html">Contacto</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link boton-sesion" href="#" id="enlace-sesion" data-bs-toggle="modal" data-bs-target="#modal-inicio-sesion">
+              👤 Iniciar sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <header class="py-5" style="background-color:var(--color-negro); color:#fff;">
+    <div class="container">
+      <p class="etiqueta-seccion mb-1" style="color:#ff5aa8;">Nuestra historia</p>
+      <h1 class="mb-2">Acerca de AutoFacil</h1>
+      <p class="subtitulo-hero mb-0">Somos una automotora pensada para que comprar o vender un vehículo deje de ser complicado.</p>
+    </div>
+  </header>
+  <section class="franja-seccion">
+    <div class="container">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+          <p class="etiqueta-seccion mb-2">Cómo empezamos</p>
+          <h2 class="mb-3">Una idea nacida de una mala experiencia comprando un auto</h2>
+          <p>
+            AutoFacil nació hace unos años, cuando un grupo de amigos con distintas
+            profesiones —uno de ventas, otro de tecnología y otro de administración—
+            vivió en carne propia lo desordenado que podía ser comprar un vehículo usado
+            en Chile: avisos poco claros, precios que cambiaban en la conversación y
+            vendedores difíciles de ubicar.
+          </p>
+          <p class="mb-0">
+            De esa frustración compartida surgió la idea de crear un solo lugar, simple
+            y directo, donde cualquier persona pudiera revisar el catálogo completo,
+            conocer el precio real de cada vehículo y contactar a la automotora sin
+            vueltas. Así partió AutoFacil, primero con un puñado de vehículos y, con el
+            tiempo, con un catálogo cada vez más variado.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <div class="linea-tiempo ps-4">
+            <div class="hito-tiempo">
+              <h6 class="mb-1">Los inicios</h6>
+              <p class="text-muted mb-0">Un pequeño equipo comienza a vender sus primeros vehículos usados de forma directa y transparente.</p>
+            </div>
+            <div class="hito-tiempo">
+              <h6 class="mb-1">Crecimiento del catálogo</h6>
+              <p class="text-muted mb-0">Se suman nuevas marcas y tipos de vehículos, desde hatchbacks urbanos hasta camionetas.</p>
+            </div>
+            <div class="hito-tiempo">
+              <h6 class="mb-1">Una plataforma propia</h6>
+              <p class="text-muted mb-0">AutoFacil da el salto a la web para que cualquier persona pueda cotizar y filtrar vehículos sin salir de casa.</p>
+            </div>
+            <div class="hito-tiempo mb-0">
+              <h6 class="mb-1">Hoy</h6>
+              <p class="text-muted mb-0">Seguimos creciendo, siempre con el mismo objetivo: que elegir un auto sea una experiencia fácil.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="franja-seccion" style="background-color:#eef0f3;">
+    <div class="container">
+      <div class="text-center mb-4">
+        <p class="etiqueta-seccion mb-1">Lo que nos guía</p>
+        <h2>Nuestra misión y valores</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="tarjeta-valor">
+            <span class="icono-valor d-block">🧭</span>
+            <h5>Misión</h5>
+            <p class="text-muted mb-0">Simplificar la compra y venta de vehículos, entregando información clara y un trato cercano en cada etapa del proceso.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="tarjeta-valor">
+            <span class="icono-valor d-block">👁️</span>
+            <h5>Transparencia</h5>
+            <p class="text-muted mb-0">Mostramos el precio, el estado y los datos reales de cada vehículo, sin letra chica ni sorpresas.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="tarjeta-valor">
+            <span class="icono-valor d-block">🤝</span>
+            <h5>Cercanía</h5>
+            <p class="text-muted mb-0">Detrás de la pantalla hay personas reales dispuestas a asesorarte, no solo un catálogo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="franja-seccion text-center">
+    <div class="container">
+      <h2 class="mb-3">¿Quieres conocer nuestro catálogo?</h2>
+      <p class="text-muted mb-4">Revisa los vehículos disponibles o escríbenos si tienes dudas.</p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="vehiculos.html" class="boton-principal">Ver vehículos</a>
+        <a href="contacto.html" class="boton-secundario">Contáctanos</a>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="modal-inicio-sesion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Iniciar sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formulario-inicio-sesion" novalidate>
+            <div class="mb-3">
+              <label for="sesion-correo" class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" id="sesion-correo" required>
+              <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="sesion-clave" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="sesion-clave" required minlength="6">
+              <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+            </div>
+            <button type="submit" class="boton-principal w-100">Ingresar</button>
+            <p class="text-muted small mt-3 mb-0">Formulario de demostración: no se almacena ningún dato real.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie-pagina">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-md-6">
+          <div class="logo-pie mb-2"><img src="images/logo.png" alt="Logo AutoFacil"></div>
+          <p class="small mb-0">Tu automotora de confianza para comprar y vender vehículos de forma fácil.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-white mb-3">Contacto</h6>
+          <p class="small mb-1">📍 Av. Principal 1234, Santiago</p>
+          <p class="small mb-1">☎️ +56 9 1234 5678</p>
+          <p class="small mb-0">✉️ contacto@autofacil.cl</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/comun.js"></script>
+</body>
+</html>

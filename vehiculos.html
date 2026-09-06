@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehículos | AutoFacil</title>
+  <meta name="description" content="Catálogo de vehículos disponibles en AutoFacil, filtrables por tipo y precio." />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="icon" href="images/logo.png">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg barra-navegacion sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="images/logo.png" alt="Logo AutoFacil">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="vehiculos.html">Vehículos</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="nosotros.html">Acerca de nosotros</a></li>
+          <li class="nav-item"><a class="nav-link enlace-menu-principal" href="contacto.html">Contacto</a></li>
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link boton-sesion" href="#" id="enlace-sesion" data-bs-toggle="modal" data-bs-target="#modal-inicio-sesion">
+              👤 Iniciar sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <header class="py-5" style="background-color:var(--color-negro); color:#fff;">
+    <div class="container">
+      <p class="etiqueta-seccion mb-1" style="color:#ff5aa8;">Catálogo</p>
+      <h1 class="mb-2">Nuestros vehículos</h1>
+      <p class="subtitulo-hero mb-0">Filtra por tipo de vehículo o por rango de precio para encontrar la opción que más te acomode.</p>
+    </div>
+  </header>
+  <section class="franja-seccion pt-4">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-3">
+          <div class="panel-filtros">
+            <h5 class="mb-3">Filtrar</h5>
+            <div class="mb-3">
+              <label for="filtro-tipo-vehiculo" class="form-label">Tipo de vehículo</label>
+              <select class="form-select" id="filtro-tipo-vehiculo">
+                <option value="todos">Todos los tipos</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="filtro-precio-minimo" class="form-label">Precio mínimo (CLP)</label>
+              <input type="number" min="0" step="500000" class="form-control" id="filtro-precio-minimo" placeholder="Ej: 7000000">
+            </div>
+            <div class="mb-3">
+              <label for="filtro-precio-maximo" class="form-label">Precio máximo (CLP)</label>
+              <input type="number" min="0" step="500000" class="form-control" id="filtro-precio-maximo" placeholder="Ej: 15000000">
+            </div>
+
+            <button type="button" id="boton-limpiar-filtros" class="boton-secundario w-100">Limpiar filtros</button>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <p class="text-muted mb-3"><span id="contador-resultados">12</span> vehículos encontrados</p>
+          <div class="row g-4" id="contenedor-catalogo-vehiculos">
+          </div>
+          <div class="mensaje-sin-resultados" id="mensaje-sin-resultados">
+            <span class="fs-1 d-block mb-2">🔍</span>
+            No encontramos vehículos que coincidan con estos filtros. Prueba ampliando el rango de precio.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="modal-inicio-sesion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Iniciar sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formulario-inicio-sesion" novalidate>
+            <div class="mb-3">
+              <label for="sesion-correo" class="form-label">Correo electrónico</label>
+              <input type="email" class="form-control" id="sesion-correo" required>
+              <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="sesion-clave" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="sesion-clave" required minlength="6">
+              <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+            </div>
+            <button type="submit" class="boton-principal w-100">Ingresar</button>
+            <p class="text-muted small mt-3 mb-0">Formulario de demostración: no se almacena ningún dato real.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="pie-pagina">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-md-6">
+          <div class="logo-pie mb-2"><img src="images/logo.png" alt="Logo AutoFacil"></div>
+          <p class="small mb-0">Tu automotora de confianza para comprar y vender vehículos de forma fácil.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-white mb-3">Contacto</h6>
+          <p class="small mb-1">📍 Av. Principal 1234, Santiago</p>
+          <p class="small mb-1">☎️ +56 9 1234 5678</p>
+          <p class="small mb-0">✉️ contacto@autofacil.cl</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/datos-vehiculos.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/vehiculos.js"></script>
+</body>
+</html>
