@@ -85,7 +85,7 @@ describe("Vehiculos (administrador)", () => {
     const user = userEvent.setup();
     renderConApp(<Vehiculos />);
     await user.click(screen.getByRole("button", { name: /Agregar vehículo/ }));
-    await user.type(screen.getByLabelText("Marca"), "Kia");
+    await user.type(screen.getByLabelText("Marca", { selector: "input" }), "Kia");
     await user.type(screen.getByLabelText("Modelo"), "Picanto");
     await user.type(screen.getByLabelText("Tipo"), "Citycar");
     await user.type(screen.getByLabelText("Precio (CLP)"), "7500000");
