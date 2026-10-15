@@ -15,10 +15,7 @@ export default function Comprar() {
     e.preventDefault();
     setValidado(true);
     if (!e.currentTarget.checkValidity()) return;
-    alert(
-      "¡Compra exitosa! Gracias por comprar tu " + vehiculo.marca + " " + vehiculo.modelo + ". " +
-      "Nuestro equipo se pondrá en contacto contigo para coordinar la entrega."
-    );
+    alert("¡Compra exitosa! Gracias por comprar tu " + vehiculo.marca + " " + vehiculo.modelo + ".");
     navegar("/vehiculos");
   }
 
@@ -57,9 +54,33 @@ export default function Comprar() {
 
             {vehiculo && (
               <div className="col-lg-7">
-                <div className="panel-filtros">
-                  <h5 className="mb-3">Datos de la tarjeta</h5>
-                  <form className={validado ? "was-validated" : ""} onSubmit={enviar} noValidate>
+                <form className={validado ? "was-validated" : ""} onSubmit={enviar} noValidate>
+                  <div className="panel-filtros mb-4">
+                    <h5 className="mb-3">Dirección de entrega</h5>
+                    <div className="mb-3">
+                      <label htmlFor="compra-direccion" className="form-label">Calle y número</label>
+                      <input
+                        type="text" className="form-control" id="compra-direccion"
+                        placeholder="Ej: Av. Providencia 1234, depto 56" autoComplete="street-address" required
+                      />
+                      <div className="invalid-feedback">Ingresa tu calle y número.</div>
+                    </div>
+                    <div className="row g-3">
+                      <div className="col-sm-6">
+                        <label htmlFor="compra-comuna" className="form-label">Comuna</label>
+                        <input type="text" className="form-control" id="compra-comuna" required />
+                        <div className="invalid-feedback">Ingresa tu comuna.</div>
+                      </div>
+                      <div className="col-sm-6">
+                        <label htmlFor="compra-ciudad" className="form-label">Ciudad</label>
+                        <input type="text" className="form-control" id="compra-ciudad" required />
+                        <div className="invalid-feedback">Ingresa tu ciudad.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="panel-filtros">
+                    <h5 className="mb-3">Datos de la tarjeta</h5>
                     <div className="mb-3">
                       <label htmlFor="compra-nombre-tarjeta" className="form-label">Nombre en la tarjeta</label>
                       <input type="text" className="form-control" id="compra-nombre-tarjeta" required />
@@ -92,8 +113,8 @@ export default function Comprar() {
                       </div>
                     </div>
                     <button type="submit" className="boton-principal w-100 mt-4">Confirmar pago</button>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             )}
           </div>

@@ -77,12 +77,16 @@ describe("Comprar", () => {
     await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
     expect(alerta).not.toHaveBeenCalled();
 
+    await user.type(screen.getByLabelText("Calle y número"), "Av. Providencia 1234");
+    await user.type(screen.getByLabelText("Comuna"), "Providencia");
+    await user.type(screen.getByLabelText("Ciudad"), "Santiago");
     await user.type(screen.getByLabelText("Nombre en la tarjeta"), "Ana Perez");
     await user.type(screen.getByLabelText("Número de tarjeta"), "4111111111111111");
     await user.type(screen.getByLabelText(/Vencimiento/), "12/30");
     await user.type(screen.getByLabelText("CVV"), "123");
     await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
     expect(alerta).toHaveBeenCalledWith(expect.stringContaining("Compra exitosa"));
+    expect(alerta).toHaveBeenCalledWith(expect.not.stringContaining("contacto"));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Nuestros vehículos");
   });
 });
