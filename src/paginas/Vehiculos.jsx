@@ -1,28 +1,40 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import EncabezadoPagina from "../componentes/EncabezadoPagina.jsx";
 import { useSesion } from "../contexto/SesionContext.jsx";
 import FormularioVehiculo from "../componentes/FormularioVehiculo.jsx";
 import { useVehiculos } from "../contexto/VehiculosContext.jsx";
-import { formatearPrecioClp } from "../datos/vehiculos.js";
+import { formatearPrecioClp, listaDeMarcas } from "../datos/vehiculos.js";
 
 export default function Vehiculos() {
   const { esAdmin } = useSesion();
   const { vehiculos, agregarVehiculo, eliminarVehiculo, restablecerCatalogo } = useVehiculos();
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const marca = searchParams.get("marca") || "todas";
   const [tipo, setTipo] = useState("todos");
   const [precioMin, setPrecioMin] = useState("");
   const [precioMax, setPrecioMax] = useState("");
 
   const tipos = [...new Set(vehiculos.map((v) => v.tipo))];
+  const marcas = [...new Set([...listaDeMarcas, ...vehiculos.map((v) => v.marca)])];
   const minimo = precioMin ? Number(precioMin) : 0;
   const maximo = precioMax ? Number(precioMax) : Infinity;
 
   const filtrados = vehiculos.filter(
-    (v) => (tipo === "todos" || v.tipo === tipo) && v.precio >= minimo && v.precio <= maximo
+    (v) =>
+      (marca === "todas" || v.marca === marca) &&
+      (tipo === "todos" || v.tipo === tipo) &&
+      v.precio >= minimo &&
+      v.precio <= maximo
   );
 
+  function cambiarMarca(valor) {
+    setSearchParams(valor === "todas" ? {} : { marca: valor });
+  }
+
   function limpiar() {
+    setSearchParams({});
     setTipo("todos");
     setPrecioMin("");
     setPrecioMax("");
@@ -46,7 +58,7 @@ export default function Vehiculos() {
       <EncabezadoPagina
         etiqueta="Catálogo"
         titulo="Nuestros vehículos"
-        subtitulo="Filtra por tipo de vehículo o por rango de precio para encontrar la opción que más te acomode."
+        subtitulo="Filtra por marca, tipo de vehículo o rango de precio para encontrar la opción que más te acomode."
       />
       <section className="franja-seccion pt-4">
         <div className="container">
@@ -54,6 +66,20 @@ export default function Vehiculos() {
             <div className="col-lg-3">
               <div className="panel-filtros">
                 <h5 className="mb-3">Filtrar</h5>
+                <div className="mb-3">
+                  <label htmlFor="filtro-marca" className="form-label">Marca</label>
+                  <select
+                    className="form-select"
+                    id="filtro-marca"
+                    value={marca}
+                    onChange={(e) => cambiarMarca(e.target.value)}
+                  >
+                    <option value="todas">Todas las marcas</option>
+                    {marcas.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="mb-3">
                   <label htmlFor="filtro-tipo-vehiculo" className="form-label">Tipo de vehículo</label>
                   <select
@@ -102,6 +128,14 @@ export default function Vehiculos() {
               {esAdmin && mostrarForm && (
                 <FormularioVehiculo tipos={tipos} onGuardar={guardar} onCancelar={() => setMostrarForm(false)} />
               )}
+              {marca !== "todas" && (
+                <p className="mb-2">
+                  Mostrando solo <strong>{marca}</strong>{" "}
+                  <button type="button" className="btn btn-link p-0 align-baseline texto-rosa" onClick={() => cambiarMarca("todas")}>
+                    Ver todas las marcas
+                  </button>
+                </p>
+              )}
               <p className="text-muted mb-3">
                 <span>{filtrados.length}</span> vehículos encontrados
               </p>
@@ -138,7 +172,7 @@ export default function Vehiculos() {
               {filtrados.length === 0 && (
                 <div className="mensaje-sin-resultados" style={{ display: "block" }}>
                   <span className="fs-1 d-block mb-2">🔍</span>
-                  No encontramos vehículos que coincidan con estos filtros. Prueba ampliando el rango de precio.
+                  No encontramos vehículos que coincidan con estos filtros. Prueba cambiando o limpiando los filtros.
                 </div>
               )}
             </div>
