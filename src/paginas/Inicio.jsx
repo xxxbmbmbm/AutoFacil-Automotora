@@ -75,13 +75,7 @@ export default function Inicio() {
           <div className="row g-3">
             {listaDeMarcas.map((marca) => (
               <div className="col-6 col-md-3 col-lg-2" key={marca}>
-                <Link
-                  to={`/vehiculos?marca=${encodeURIComponent(marca)}`}
-                  className="insignia-marca text-decoration-none"
-                  aria-label={`Ver vehículos ${marca}`}
-                >
-                  {marca}
-                </Link>
+                <div className="insignia-marca">{marca}</div>
               </div>
             ))}
           </div>
