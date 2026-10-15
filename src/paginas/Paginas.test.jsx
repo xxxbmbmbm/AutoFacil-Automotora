@@ -13,6 +13,16 @@ describe("Rutas de la aplicación", () => {
     expect(document.title).toBe("AutoFacil | Automotora");
   });
 
+  it("al tocar una marca del inicio se abre el catálogo filtrado por esa marca", async () => {
+    const user = userEvent.setup();
+    const marca = listaDeMarcas[0];
+    const esperados = listaDeVehiculos.filter((v) => v.marca === marca).length;
+    renderConApp(<App />, { ruta: "/" });
+    await user.click(screen.getByRole("link", { name: `Ver vehículos ${marca}` }));
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Nuestros vehículos");
+    expect(screen.getByText(/vehículos encontrados/).textContent).toBe(`${esperados} vehículos encontrados`);
+  });
+
   it("Nosotros y Vehículos actualizan el título", () => {
     renderConApp(<App />, { ruta: "/nosotros" });
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Acerca de AutoFacil");

@@ -36,6 +36,35 @@ describe("Vehiculos (usuario normal)", () => {
     expect(cuenta()).toBe("0 vehículos encontrados");
   });
 
+  it("filtra por marca desde la URL y permite volver a ver todas", async () => {
+    const user = userEvent.setup();
+    const marca = listaDeVehiculos[0].marca;
+    const esperados = listaDeVehiculos.filter((v) => v.marca === marca).length;
+    renderConApp(<Vehiculos />, { ruta: `/vehiculos?marca=${marca}` });
+    expect(cuenta()).toBe(`${esperados} vehículos encontrados`);
+    expect(screen.getByLabelText("Marca")).toHaveValue(marca);
+
+    await user.click(screen.getByRole("button", { name: "Ver todas las marcas" }));
+    expect(cuenta()).toBe(`${total} vehículos encontrados`);
+    expect(screen.getByLabelText("Marca")).toHaveValue("todas");
+  });
+
+  it("cambia de marca con el selector y limpiar filtros la quita", async () => {
+    const user = userEvent.setup();
+    const marca = listaDeVehiculos[1].marca;
+    const esperados = listaDeVehiculos.filter((v) => v.marca === marca).length;
+    renderConApp(<Vehiculos />);
+    await user.selectOptions(screen.getByLabelText("Marca"), marca);
+    expect(cuenta()).toBe(`${esperados} vehículos encontrados`);
+
+    await user.click(screen.getByRole("button", { name: "Limpiar filtros" }));
+    expect(cuenta()).toBe(`${total} vehículos encontrados`);
+
+    await user.selectOptions(screen.getByLabelText("Marca"), marca);
+    await user.selectOptions(screen.getByLabelText("Marca"), "todas");
+    expect(cuenta()).toBe(`${total} vehículos encontrados`);
+  });
+
   it("muestra la insignia de oferta y el precio anterior solo cuando corresponde", () => {
     renderConApp(<Vehiculos />);
     const ofertas = listaDeVehiculos.filter((v) => v.precioAnterior !== null).length;
