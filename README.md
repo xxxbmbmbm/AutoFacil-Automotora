@@ -2,7 +2,7 @@
 
     npm install
     npm run dev          # desarrollo
-    npm run test         # tests + cobertura (100% en datos y contextos)
+    npm run test         # tests + cobertura (100% en toda la aplicación)
     npm run test:watch   # tests en modo interactivo
     npm run build        # corre los tests y, si pasan, arma la página en /dist
     npm run build:rapido # solo arma la página, sin tests

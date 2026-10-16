@@ -11,8 +11,9 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      // "Utilidades": datos, funciones de formato y contextos (lógica de sesión, catálogo y tema).
-      include: ["src/datos/**/*.js", "src/contexto/**/*.jsx"],
+      // Cobertura de TODA la aplicación: punto de entrada, App, componentes,
+      // páginas, contextos y datos (antes solo se medían datos y contextos).
+      include: ["src/**/*.{js,jsx}"],
       exclude: ["src/**/*.test.{js,jsx}", "src/test/**"],
       thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 },
     },
