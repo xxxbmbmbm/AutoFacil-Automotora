@@ -39,7 +39,7 @@ describe("main.jsx (punto de entrada)", () => {
     window.history.pushState({}, "", "/vehiculos");
     await arrancar();
     // Catálogo: lista los vehículos.
-    expect(screen.getByText(/vehículos encontrados/)).toHaveTextContent("12 vehículos encontrados");
+    expect(await screen.findByText(/vehículos encontrados/)).toHaveTextContent("12 vehículos encontrados");
     // Tema: aplica el modo claro al documento.
     expect(document.documentElement).toHaveAttribute("data-tema", "claro");
     // Sesión: el botón del menú abre el modal.

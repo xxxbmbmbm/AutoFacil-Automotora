@@ -1,1 +1,7 @@
 node_modules/
+dist/
+coverage/
+# Variables de entorno: cada uno crea las suyas a partir de .env.development.local.example
+.env
+.env.*
+!.env.development.local.example

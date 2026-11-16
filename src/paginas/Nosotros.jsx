@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import EncabezadoPagina from "../componentes/EncabezadoPagina.jsx";
+import Icono from "../componentes/Icono.jsx";
 
 const hitos = [
   { t: "Los inicios", d: "Un pequeño equipo comienza a vender sus primeros vehículos usados de forma directa y transparente." },
@@ -9,9 +9,9 @@ const hitos = [
 ];
 
 const valores = [
-  { i: "🧭", t: "Misión", d: "Simplificar la compra y venta de vehículos, entregando información clara y un trato cercano en cada etapa del proceso." },
-  { i: "👁️", t: "Transparencia", d: "Mostramos el precio, el estado y los datos reales de cada vehículo, sin letra chica ni sorpresas." },
-  { i: "🤝", t: "Cercanía", d: "Detrás de la pantalla hay personas reales dispuestas a asesorarte, no solo un catálogo." },
+  { i: "brujula", t: "Misión", d: "Simplificar la compra y venta de vehículos, entregando información clara y un trato cercano en cada etapa del proceso." },
+  { i: "ojo", t: "Transparencia", d: "Mostramos el precio, el estado y los datos reales de cada vehículo, sin letra chica ni sorpresas." },
+  { i: "personas", t: "Cercanía", d: "Detrás de la pantalla hay personas reales dispuestas a asesorarte, no solo un catálogo." },
 ];
 
 export default function Nosotros() {
@@ -20,7 +20,7 @@ export default function Nosotros() {
       <EncabezadoPagina
         etiqueta="Nuestra historia"
         titulo="Acerca de AutoFacil"
-        subtitulo="Somos una automotora pensada para que comprar o vender un vehículo deje de ser complicado."
+        subtitulo="Somos una automotora pensada para que comprar o vender un vehículo deje de ser complicado"
       />
       <section className="franja-seccion">
         <div className="container">
@@ -59,7 +59,7 @@ export default function Nosotros() {
 
       <section className="franja-seccion franja-alterna">
         <div className="container">
-          <div className="text-center mb-4">
+          <div className="mb-4">
             <p className="etiqueta-seccion mb-1">Lo que nos guía</p>
             <h2>Nuestra misión y valores</h2>
           </div>
@@ -67,23 +67,12 @@ export default function Nosotros() {
             {valores.map((v) => (
               <div className="col-md-4" key={v.t}>
                 <div className="tarjeta-valor">
-                  <span className="icono-valor d-block">{v.i}</span>
+                  <span className="icono-valor d-block"><Icono nombre={v.i} tamano={20} /></span>
                   <h5>{v.t}</h5>
                   <p className="text-muted mb-0">{v.d}</p>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="franja-seccion text-center">
-        <div className="container">
-          <h2 className="mb-3">¿Quieres conocer nuestro catálogo?</h2>
-          <p className="text-muted mb-4">Revisa los vehículos disponibles o escríbenos si tienes dudas.</p>
-          <div className="d-flex justify-content-center gap-3 flex-wrap">
-            <Link to="/vehiculos" className="boton-principal">Ver vehículos</Link>
-            <Link to="/contacto" className="boton-secundario">Contáctanos</Link>
           </div>
         </div>
       </section>

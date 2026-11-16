@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { listaDeVehiculos, listaDeMarcas, formatearPrecioClp } from "./vehiculos.js";
-import { ADMIN } from "./admin.js";
 
 describe("formatearPrecioClp", () => {
   it("formatea con símbolo $ y puntos de miles", () => {
@@ -26,13 +25,5 @@ describe("catálogo base", () => {
   it("lista de marcas no vacía y sin repetidos", () => {
     expect(listaDeMarcas.length).toBeGreaterThan(0);
     expect(new Set(listaDeMarcas).size).toBe(listaDeMarcas.length);
-  });
-});
-
-describe("administrador reservado", () => {
-  it("define credenciales y rol admin", () => {
-    expect(ADMIN.rol).toBe("admin");
-    expect(ADMIN.correo).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-    expect(ADMIN.clave.length).toBeGreaterThanOrEqual(6);
   });
 });

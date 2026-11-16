@@ -1,147 +1,71 @@
 import { describe, it, expect, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Routes, Route } from "react-router-dom";
-import Comprar from "./Comprar.jsx";
-import { renderConApp } from "../test/utils.jsx";
-import { listaDeVehiculos } from "../datos/vehiculos.js";
+import App from "../App.jsx";
+import { renderConApp, iniciarComoCliente } from "../test/utils.jsx";
+import { datosApiFalsa } from "../test/apiFalsa.js";
 
-const vehiculo = listaDeVehiculos[0];
-
-function montar(ruta) {
-  return renderConApp(
-    <Routes>
-      <Route path="/comprar" element={<Comprar />} />
-      <Route path="/vehiculos" element={<h1>Destino: catálogo</h1>} />
-    </Routes>,
-    { ruta }
-  );
+async function llenarCompra(user, tarjeta = "4111 1111 1111 1111") {
+  await user.type(screen.getByLabelText("Calle y número"), "Av. Providencia 1234");
+  await user.type(screen.getByLabelText("Comuna"), "Providencia");
+  await user.type(screen.getByLabelText("Ciudad"), "Santiago");
+  await user.type(screen.getByLabelText("Nombre en la tarjeta"), "Cliente Prueba");
+  await user.type(screen.getByLabelText("Número de tarjeta"), tarjeta);
+  await user.type(screen.getByLabelText(/Vencimiento/), "12/30");
+  await user.type(screen.getByLabelText("CVV"), "123");
 }
 
-const datosValidos = {
-  "Calle y número": "Av. Providencia 1234",
-  Comuna: "Providencia",
-  Ciudad: "Santiago",
-  "Nombre en la tarjeta": "Ana Perez",
-  "Número de tarjeta": "4111111111111111",
-  Vencimiento: "12/30",
-  CVV: "123",
-};
-
-// Un valor "" deja el campo sin completar.
-async function llenar(user, cambios = {}) {
-  for (const [etiqueta, valor] of Object.entries({ ...datosValidos, ...cambios })) {
-    if (valor === "") continue;
-    const campo = etiqueta === "Vencimiento" ? screen.getByLabelText(/Vencimiento/) : screen.getByLabelText(etiqueta);
-    await user.type(campo, valor);
-  }
-}
-
-const confirmar = (user) => user.click(screen.getByRole("button", { name: "Confirmar pago" }));
-
-describe("Comprar - resumen del vehículo", () => {
-  it("muestra el encabezado de la página", () => {
-    montar(`/comprar?id=${vehiculo.id}`);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Confirma tu compra");
-    expect(screen.getByText(/no se procesa ningún pago real/)).toBeInTheDocument();
+describe("Comprar", () => {
+  it("sin sesión pide iniciar sesión antes de mostrar el pago", async () => {
+    const user = userEvent.setup();
+    renderConApp(<App />, { ruta: "/comprar?id=1" });
+    expect(await screen.findByText("Toyota Yaris 2021")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Calle y número")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Iniciar sesión o crear cuenta" }));
+    expect(screen.getByRole("heading", { name: "Iniciar sesión" })).toBeInTheDocument();
   });
 
-  it("muestra los datos del vehículo elegido", () => {
-    montar(`/comprar?id=${vehiculo.id}`);
-    expect(screen.getByRole("heading", { name: "Estás comprando" })).toBeInTheDocument();
-    expect(screen.getByAltText("Foto de Toyota Yaris")).toHaveAttribute("src", vehiculo.imagen);
-    expect(screen.getByText("Toyota Yaris 2021")).toBeInTheDocument();
-    expect(screen.getByText(/32\.000 km/)).toBeInTheDocument();
-    expect(screen.getByText(/Automática/)).toBeInTheDocument();
-    expect(screen.getByText("$8.990.000")).toBeInTheDocument();
+  it("el cliente compra: se crea la boleta y el vehículo sale de la tienda", async () => {
+    const user = userEvent.setup();
+    const alerta = vi.spyOn(window, "alert").mockImplementation(() => {});
+    iniciarComoCliente();
+    renderConApp(<App />, { ruta: "/comprar?id=1" });
+    await screen.findByText("Toyota Yaris 2021");
+
+    await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
+    expect(alerta).not.toHaveBeenCalled(); // formulario incompleto
+
+    await llenarCompra(user, "4111");
+    await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
+    expect(alerta).not.toHaveBeenCalled(); // tarjeta muy corta
+
+    await user.clear(screen.getByLabelText("Número de tarjeta"));
+    await user.type(screen.getByLabelText("Número de tarjeta"), "4111 1111 1111 1111");
+    await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
+
+    expect(await screen.findByRole("heading", { level: 1, name: "Nuestros vehículos" })).toBeInTheDocument();
+    expect(alerta).toHaveBeenCalledWith(expect.stringContaining("Compra exitosa (boleta N°"));
+    expect(await screen.findByText(/vehículos encontrados/)).toHaveTextContent("11 vehículos encontrados");
+    // El backend recibe la dirección, pero nunca los datos de la tarjeta
+    const cuerpo = datosApiFalsa().boletas[0];
+    expect(cuerpo).toMatchObject({ comuna: "Providencia", total: 8990000 });
+    expect(JSON.stringify(fetch.mock.calls)).not.toContain("4111");
   });
 
-  it("muestra otro vehículo según el id de la URL", () => {
-    const otro = listaDeVehiculos.find((v) => v.marca === "Ford");
-    montar(`/comprar?id=${otro.id}`);
-    expect(screen.getByText(`${otro.marca} ${otro.modelo} ${otro.anio}`)).toBeInTheDocument();
-    expect(screen.getByText("$16.500.000")).toBeInTheDocument();
+  it("muestra el error si el vehículo ya se vendió mientras pagaba", async () => {
+    const user = userEvent.setup();
+    iniciarComoCliente();
+    renderConApp(<App />, { ruta: "/comprar?id=1" });
+    await screen.findByText("Toyota Yaris 2021");
+    datosApiFalsa().vehiculos.find((v) => v.id === 1).estado = "VENDIDO";
+    await llenarCompra(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar pago" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("El vehículo ya no está disponible.");
   });
 
-  it.each([
-    ["no hay id en la URL", "/comprar"],
-    ["el id no existe", "/comprar?id=9999"],
-    ["el id no es un número", "/comprar?id=abc"],
-  ])("avisa y oculta el formulario cuando %s", (_descripcion, ruta) => {
-    montar(ruta);
-    expect(screen.getByText("No encontramos el vehículo seleccionado.")).toBeInTheDocument();
+  it("avisa si el vehículo no existe", async () => {
+    renderConApp(<App />, { ruta: "/comprar?id=999" });
+    expect(await screen.findByText("No encontramos el vehículo seleccionado.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Volver al catálogo" })).toHaveAttribute("href", "/vehiculos");
-    expect(screen.queryByRole("button", { name: "Confirmar pago" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Datos de la tarjeta" })).not.toBeInTheDocument();
-  });
-});
-
-describe("Comprar - formulario", () => {
-  it("muestra las secciones de entrega y de tarjeta", () => {
-    montar(`/comprar?id=${vehiculo.id}`);
-    expect(screen.getByRole("heading", { name: "Dirección de entrega" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Datos de la tarjeta" })).toBeInTheDocument();
-  });
-
-  it("limita el número de tarjeta a 19 caracteres", async () => {
-    const user = userEvent.setup();
-    montar(`/comprar?id=${vehiculo.id}`);
-    await user.type(screen.getByLabelText("Número de tarjeta"), "12345678901234567890123");
-    expect(screen.getByLabelText("Número de tarjeta")).toHaveValue("1234567890123456789");
-  });
-
-  it("no marca la validación hasta intentar confirmar", () => {
-    const { container } = montar(`/comprar?id=${vehiculo.id}`);
-    expect(container.querySelector("form")).not.toHaveClass("was-validated");
-  });
-
-  it("al confirmar sin datos marca la validación y no avanza", async () => {
-    const user = userEvent.setup();
-    const alerta = vi.spyOn(window, "alert").mockImplementation(() => {});
-    const { container } = montar(`/comprar?id=${vehiculo.id}`);
-    await confirmar(user);
-    expect(container.querySelector("form")).toHaveClass("was-validated");
-    expect(alerta).not.toHaveBeenCalled();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Confirma tu compra");
-  });
-
-  it.each([
-    ["falta el nombre de la tarjeta", { "Nombre en la tarjeta": "" }],
-    ["el número de tarjeta es muy corto", { "Número de tarjeta": "1234" }],
-    ["el número de tarjeta tiene letras", { "Número de tarjeta": "abcdefghijklmn" }],
-    ["el mes de vencimiento es 13", { Vencimiento: "13/30" }],
-    ["el vencimiento no tiene el formato MM/AA", { Vencimiento: "1230" }],
-    ["el CVV es muy corto", { CVV: "12" }],
-    ["el CVV tiene letras", { CVV: "abc" }],
-  ])("no confirma si %s", async (_descripcion, cambios) => {
-    const user = userEvent.setup();
-    const alerta = vi.spyOn(window, "alert").mockImplementation(() => {});
-    montar(`/comprar?id=${vehiculo.id}`);
-    await llenar(user, cambios);
-    await confirmar(user);
-    expect(alerta).not.toHaveBeenCalled();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Confirma tu compra");
-  });
-});
-
-describe("Comprar - compra exitosa", () => {
-  it("confirma, nombra el vehículo y vuelve al catálogo", async () => {
-    const user = userEvent.setup();
-    const alerta = vi.spyOn(window, "alert").mockImplementation(() => {});
-    montar(`/comprar?id=${vehiculo.id}`);
-    await llenar(user);
-    await confirmar(user);
-    expect(alerta).toHaveBeenCalledTimes(1);
-    expect(alerta).toHaveBeenCalledWith("¡Compra exitosa! Gracias por comprar tu Toyota Yaris.");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Destino: catálogo");
-  });
-
-  it("acepta un número de tarjeta con espacios y un CVV de 4 dígitos", async () => {
-    const user = userEvent.setup();
-    const alerta = vi.spyOn(window, "alert").mockImplementation(() => {});
-    montar(`/comprar?id=${vehiculo.id}`);
-    await llenar(user, { "Número de tarjeta": "4111 1111 1111 1111", CVV: "1234" });
-    await confirmar(user);
-    expect(alerta).toHaveBeenCalledTimes(1);
   });
 });

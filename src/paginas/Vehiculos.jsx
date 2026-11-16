@@ -3,12 +3,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import EncabezadoPagina from "../componentes/EncabezadoPagina.jsx";
 import { useSesion } from "../contexto/SesionContext.jsx";
 import FormularioVehiculo from "../componentes/FormularioVehiculo.jsx";
+import Icono from "../componentes/Icono.jsx";
 import { useVehiculos } from "../contexto/VehiculosContext.jsx";
 import { formatearPrecioClp, listaDeMarcas } from "../datos/vehiculos.js";
 
 export default function Vehiculos() {
-  const { esAdmin } = useSesion();
-  const { vehiculos, agregarVehiculo, eliminarVehiculo, restablecerCatalogo } = useVehiculos();
+  const { esAdmin, esVendedor } = useSesion();
+  const { vehiculos, categorias, cargando, error, agregarVehiculo, eliminarVehiculo } = useVehiculos();
   const [mostrarForm, setMostrarForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const marca = searchParams.get("marca") || "todas";
@@ -40,17 +41,17 @@ export default function Vehiculos() {
     setPrecioMax("");
   }
 
-  function eliminar(v) {
-    if (window.confirm(`¿Eliminar ${v.marca} ${v.modelo} del catálogo?`)) eliminarVehiculo(v.id);
+  async function eliminar(v) {
+    if (!window.confirm(`¿Eliminar ${v.marca} ${v.modelo} del catálogo?`)) return;
+    const problema = await eliminarVehiculo(v.id);
+    if (problema) window.alert(problema);
   }
 
-  function guardar(datos) {
-    agregarVehiculo(datos);
-    setMostrarForm(false);
-  }
-
-  function restablecer() {
-    if (window.confirm("¿Restablecer el catálogo original? Se perderán los cambios.")) restablecerCatalogo();
+  // Devuelve el error al formulario para que lo muestre; si se guardó, lo cierra.
+  async function guardar(datos) {
+    const problema = await agregarVehiculo(datos);
+    if (!problema) setMostrarForm(false);
+    return problema;
   }
 
   return (
@@ -58,7 +59,7 @@ export default function Vehiculos() {
       <EncabezadoPagina
         etiqueta="Catálogo"
         titulo="Nuestros vehículos"
-        subtitulo="Filtra por marca, tipo de vehículo o rango de precio para encontrar la opción que más te acomode."
+        subtitulo="Filtra por marca, tipo de vehículo o rango de precio para encontrar la opción que más te acomode"
       />
       <section className="franja-seccion pt-4">
         <div className="container">
@@ -118,16 +119,16 @@ export default function Vehiculos() {
 
             <div className="col-lg-9">
               {esAdmin && (
-                <div className="d-flex gap-2 flex-wrap mb-3">
+                <div className="barra-admin">
                   <button type="button" className="boton-principal" onClick={() => setMostrarForm(!mostrarForm)}>
-                    {mostrarForm ? "Cerrar formulario" : "➕ Agregar vehículo"}
+                    {mostrarForm ? "Cerrar formulario" : <><Icono nombre="mas" tamano={16} />Agregar vehículo</>}
                   </button>
-                  <button type="button" className="boton-secundario" onClick={restablecer}>↺ Restablecer catálogo</button>
                 </div>
               )}
               {esAdmin && mostrarForm && (
-                <FormularioVehiculo tipos={tipos} onGuardar={guardar} onCancelar={() => setMostrarForm(false)} />
+                <FormularioVehiculo categorias={categorias} onGuardar={guardar} onCancelar={() => setMostrarForm(false)} />
               )}
+              {error && <div className="alert alert-danger" role="alert">{error}</div>}
               {marca !== "todas" && (
                 <p className="mb-2">
                   Mostrando solo <strong>{marca}</strong>{" "}
@@ -136,31 +137,39 @@ export default function Vehiculos() {
                   </button>
                 </p>
               )}
-              <p className="text-muted mb-3">
-                <span>{filtrados.length}</span> vehículos encontrados
+              <p className="conteo-resultados">
+                {cargando ? "Cargando vehículos…" : <><span>{filtrados.length}</span> vehículos encontrados</>}
               </p>
               <div className="row g-4">
                 {filtrados.map((v) => {
-                  const oferta = v.precioAnterior !== null;
+                  const oferta = v.precioAnterior != null;
+                  const vendido = v.estado === "VENDIDO";
                   return (
                     <div className="col-sm-6 col-lg-4 col-xl-3" key={v.id}>
                       <div className="tarjeta-vehiculo">
-                        <div className="cabecera-vehiculo" style={{ backgroundColor: v.colorFondo }}>
+                        <div className="cabecera-vehiculo esqueleto" style={{ backgroundColor: v.colorFondo }}>
                           <img className="foto-vehiculo" src={v.imagen} alt={`Foto de ${v.marca} ${v.modelo}`} />
                           {oferta && <span className="insignia-promocion">Oferta</span>}
                           <span className="insignia-tipo">{v.tipo}</span>
                         </div>
                         <div className="cuerpo-tarjeta">
                           <p className="marca-modelo mb-1">{v.marca} {v.modelo} {v.anio}</p>
-                          <p className="detalle-vehiculo mb-2">{v.kilometraje} &middot; {v.transmision}</p>
-                          <p className="precio-vehiculo mb-2">
+                          <p className="detalle-vehiculo mb-0">{v.kilometraje} &middot; {v.transmision}</p>
+                          <div className="corte-ficha" />
+                          <p className="precio-vehiculo mb-3">
                             {oferta && <span className="precio-anterior">{formatearPrecioClp(v.precioAnterior)}</span>}
                             {formatearPrecioClp(v.precio)}
                           </p>
-                          <Link className="boton-comprar" to={`/comprar?id=${v.id}`}>🛒 Comprar</Link>
+                          {vendido && <p className="mb-2"><span className="estado-chip estado-destacado">Vendido</span></p>}
+                          {!esVendedor && !vendido && (
+                            <Link className="boton-comprar" to={`/comprar?id=${v.id}`}>Comprar</Link>
+                          )}
+                          <Link className="enlace-flecha d-inline-flex mt-2" to={`/vehiculos/${v.id}`}>
+                            Ver detalle <Icono nombre="flecha" tamano={14} />
+                          </Link>
                           {esAdmin && (
                             <button type="button" className="boton-eliminar-vehiculo mt-2" onClick={() => eliminar(v)}>
-                              🗑️ Eliminar
+                              <Icono nombre="basurero" tamano={16} />Eliminar
                             </button>
                           )}
                         </div>
@@ -169,10 +178,10 @@ export default function Vehiculos() {
                   );
                 })}
               </div>
-              {filtrados.length === 0 && (
+              {!cargando && filtrados.length === 0 && (
                 <div className="mensaje-sin-resultados" style={{ display: "block" }}>
-                  <span className="fs-1 d-block mb-2">🔍</span>
-                  No encontramos vehículos que coincidan con estos filtros. Prueba cambiando o limpiando los filtros.
+                  <Icono nombre="buscar" tamano={24} />
+                  No encontramos vehículos que coincidan con estos filtros. Prueba cambiando o limpiando los filtros
                 </div>
               )}
             </div>

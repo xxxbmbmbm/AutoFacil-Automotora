@@ -2,15 +2,15 @@ import { describe, it, expect } from "vitest";
 import { screen } from "@testing-library/react";
 import Inicio from "./Inicio.jsx";
 import { renderConApp } from "../test/utils.jsx";
-import { CLAVE_VEHICULOS } from "../contexto/VehiculosContext.jsx";
+import { datosApiFalsa } from "../test/apiFalsa.js";
 import { listaDeVehiculos, listaDeMarcas, formatearPrecioClp } from "../datos/vehiculos.js";
 
 const fotos = () => screen.queryAllByAltText(/^Foto de /);
 
 function vehiculoDePrueba(id, marca, modelo, precio) {
   return {
-    id, marca, modelo, anio: 2024, tipo: "Sedán", precio, precioAnterior: null,
-    kilometraje: "1.000 km", transmision: "Manual", imagen: "/images/logo.png", colorFondo: "#000000",
+    id, marca, modelo, anio: 2024, tipo: "Sedán", precio, precioAnterior: null, estado: "DISPONIBLE",
+    kilometraje: 1000, transmision: "Manual", imagen: "/images/logo.png", colorFondo: "#000000",
   };
 }
 
@@ -18,7 +18,7 @@ describe("Inicio - portada", () => {
   it("muestra el título principal y la etiqueta de la automotora", () => {
     renderConApp(<Inicio />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Encuentra tu próximo auto de forma fácil");
-    expect(screen.getByText("Automotora de confianza")).toBeInTheDocument();
+    expect(screen.queryByText("Automotora de confianza")).not.toBeInTheDocument();
   });
 
   it("ofrece los botones para ver vehículos y contactar", () => {
@@ -29,9 +29,9 @@ describe("Inicio - portada", () => {
 });
 
 describe("Inicio - vitrina de vehículos", () => {
-  it("muestra solo los 6 primeros vehículos del catálogo", () => {
+  it("muestra solo los 6 primeros vehículos del catálogo", async () => {
     renderConApp(<Inicio />);
-    expect(fotos()).toHaveLength(6);
+    expect(await screen.findAllByAltText(/^Foto de /)).toHaveLength(6);
     for (const v of listaDeVehiculos.slice(0, 6)) {
       expect(screen.getByAltText(`Foto de ${v.marca} ${v.modelo}`)).toHaveAttribute("src", v.imagen);
       expect(screen.getByText(formatearPrecioClp(v.precio))).toBeInTheDocument();
@@ -40,9 +40,9 @@ describe("Inicio - vitrina de vehículos", () => {
     expect(screen.queryByAltText(`Foto de ${septimo.marca} ${septimo.modelo}`)).not.toBeInTheDocument();
   });
 
-  it("cada tarjeta enlaza al catálogo", () => {
+  it("cada tarjeta enlaza al catálogo", async () => {
     renderConApp(<Inicio />);
-    const enlace = screen.getByAltText("Foto de Toyota Yaris").closest("a");
+    const enlace = (await screen.findByAltText("Foto de Toyota Yaris")).closest("a");
     expect(enlace).toHaveAttribute("href", "/vehiculos");
   });
 
@@ -51,19 +51,16 @@ describe("Inicio - vitrina de vehículos", () => {
     expect(screen.getByRole("link", { name: /Ver catálogo completo/ })).toHaveAttribute("href", "/vehiculos");
   });
 
-  it("refleja el catálogo guardado por el administrador", () => {
-    localStorage.setItem(
-      CLAVE_VEHICULOS,
-      JSON.stringify([vehiculoDePrueba(1, "Marca", "Uno", 1500000), vehiculoDePrueba(2, "Marca", "Dos", 2500000)])
-    );
+  it("muestra lo que entrega el backend", async () => {
+    datosApiFalsa().vehiculos = [vehiculoDePrueba(1, "Marca", "Uno", 1500000), vehiculoDePrueba(2, "Marca", "Dos", 2500000)];
     renderConApp(<Inicio />);
-    expect(fotos()).toHaveLength(2);
+    expect(await screen.findAllByAltText(/^Foto de /)).toHaveLength(2);
     expect(screen.getByAltText("Foto de Marca Uno")).toBeInTheDocument();
     expect(screen.getByText("$2.500.000")).toBeInTheDocument();
   });
 
   it("no rompe con un catálogo vacío", () => {
-    localStorage.setItem(CLAVE_VEHICULOS, "[]");
+    datosApiFalsa().vehiculos = [];
     renderConApp(<Inicio />);
     expect(fotos()).toHaveLength(0);
     expect(screen.getByRole("heading", { name: "Algunos de nuestros vehículos" })).toBeInTheDocument();

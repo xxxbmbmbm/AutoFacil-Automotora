@@ -1,28 +1,53 @@
 import { useState } from "react";
 import EncabezadoPagina from "../componentes/EncabezadoPagina.jsx";
+import Icono from "../componentes/Icono.jsx";
+import AvisoSesionRequerida from "../componentes/AvisoSesionRequerida.jsx";
+import { useSesion } from "../contexto/SesionContext.jsx";
 
 const datos = [
-  { icono: "📍", titulo: "Dirección", texto: "Av. Principal 1234, Santiago, Chile" },
-  { icono: "☎️", titulo: "Teléfono", texto: "+56 9 1234 5678" },
-  { icono: "✉️", titulo: "Correo", texto: "contacto@autofacil.cl" },
-  { icono: "🕒", titulo: "Horario de atención", texto: "Lunes a sábado, 9:30 a 19:00 hrs" },
+  { icono: "ubicacion", titulo: "Dirección", texto: "Av. Principal 1234, Santiago, Chile" },
+  { icono: "telefono", titulo: "Teléfono", texto: "+56 9 1234 5678" },
+  { icono: "correo", titulo: "Correo", texto: "contacto@autofacil.cl" },
+  { icono: "reloj", titulo: "Horario de atención", texto: "Lunes a sábado, 9:30 a 19:00 hrs" },
 ];
 
 export default function Contacto() {
   const [validado, setValidado] = useState(false);
+  const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const { usuario, api } = useSesion();
 
-  function enviar(e) {
+  async function enviar(e) {
     e.preventDefault();
     const formulario = e.currentTarget;
     setValidado(true);
     if (!formulario.checkValidity()) return;
-    const nombre = formulario.elements["contacto-nombre"].value.trim();
-    alert(
-      "¡Gracias, " + nombre + "! Tu mensaje fue enviado con éxito. " +
-      "Un asesor de AutoFacil se pondrá en contacto contigo a la brevedad."
-    );
-    formulario.reset();
-    setValidado(false);
+    const campo = (id) => formulario.elements[id].value.trim();
+    const nombre = campo("contacto-nombre");
+    setEnviando(true);
+    try {
+      await api("contacto", "/contactos", {
+        metodo: "POST",
+        cuerpo: {
+          nombre,
+          correo: campo("contacto-correo"),
+          telefono: campo("contacto-telefono"),
+          asunto: campo("contacto-asunto"),
+          mensaje: campo("contacto-mensaje"),
+        },
+      });
+      alert(
+        "Gracias, " + nombre + ". Recibimos tu mensaje y un asesor de AutoFacil " +
+        "se pondrá en contacto contigo a la brevedad."
+      );
+      formulario.reset();
+      setValidado(false);
+      setError("");
+    } catch (problema) {
+      setError(problema.message);
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -30,7 +55,7 @@ export default function Contacto() {
       <EncabezadoPagina
         etiqueta="Hablemos"
         titulo="Contacto"
-        subtitulo="¿Tienes dudas sobre algún vehículo? Escríbenos y te respondemos a la brevedad."
+        subtitulo="¿Tienes dudas sobre algún vehículo? Escríbenos y te respondemos a la brevedad"
       />
       <section className="franja-seccion">
         <div className="container">
@@ -38,7 +63,7 @@ export default function Contacto() {
             <div className="col-lg-5">
               {datos.map((d) => (
                 <div className="dato-contacto" key={d.titulo}>
-                  {d.icono}
+                  <Icono nombre={d.icono} />
                   <div>
                     <h6 className="mb-1">{d.titulo}</h6>
                     <p className="text-muted mb-0">{d.texto}</p>
@@ -49,6 +74,7 @@ export default function Contacto() {
             <div className="col-lg-7">
               <div className="tarjeta-contacto">
                 <h4 className="mb-3">Envíanos un mensaje</h4>
+                {usuario ? (
                 <form className={validado ? "was-validated" : ""} onSubmit={enviar} noValidate>
                   <div className="row g-3">
                     <div className="col-md-6">
@@ -83,10 +109,14 @@ export default function Contacto() {
                       <div className="invalid-feedback">Cuéntanos brevemente en qué te podemos ayudar.</div>
                     </div>
                     <div className="col-12">
-                      <button type="submit" className="boton-principal w-100 w-md-auto">📨 Enviar mensaje</button>
+                      {error && <div className="alert alert-danger py-2" role="alert">{error}</div>}
+                      <button type="submit" className="boton-principal" disabled={enviando}>Enviar mensaje</button>
                     </div>
                   </div>
                 </form>
+                ) : (
+                  <AvisoSesionRequerida accion="enviarnos un mensaje" />
+                )}
               </div>
             </div>
           </div>

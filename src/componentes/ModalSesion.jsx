@@ -8,6 +8,7 @@ export default function ModalSesion() {
   const [modo, setModo] = useState("entrar");
   const [campos, setCampos] = useState(vacio);
   const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   if (!modalAbierto) return null;
 
@@ -24,12 +25,14 @@ export default function ModalSesion() {
     setError("");
   }
 
-  function enviar(e) {
+  async function enviar(e) {
     e.preventDefault();
+    setEnviando(true);
     const resultado =
       modo === "entrar"
-        ? iniciarSesion(campos.correo, campos.clave)
-        : registrarUsuario(campos.nombre, campos.correo, campos.clave, campos.confirmar);
+        ? await iniciarSesion(campos.correo, campos.clave)
+        : await registrarUsuario(campos.nombre, campos.correo, campos.clave, campos.confirmar);
+    setEnviando(false);
     if (resultado) {
       setError(resultado);
       return;
@@ -84,12 +87,9 @@ export default function ModalSesion() {
 
                 {error && <div className="alert alert-danger py-2 small" role="alert">{error}</div>}
 
-                <button type="submit" className="boton-principal w-100">
+                <button type="submit" className="boton-principal w-100" disabled={enviando}>
                   {modo === "entrar" ? "Ingresar" : "Crear cuenta"}
                 </button>
-                <p className="text-muted small mt-3 mb-0">
-                  Demostración: los datos se guardan solo en este navegador.
-                </p>
               </form>
             </div>
           </div>

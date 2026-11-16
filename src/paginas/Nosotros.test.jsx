@@ -40,10 +40,8 @@ describe("Nosotros", () => {
     expect(screen.getByText(/Simplificar la compra y venta de vehículos/)).toBeInTheDocument();
   });
 
-  it("invita a ver los vehículos o a contactar", () => {
+  it("ya no muestra la invitación al catálogo", () => {
     renderConApp(<Nosotros />);
-    expect(screen.getByRole("heading", { name: "¿Quieres conocer nuestro catálogo?" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ver vehículos" })).toHaveAttribute("href", "/vehiculos");
-    expect(screen.getByRole("link", { name: "Contáctanos" })).toHaveAttribute("href", "/contacto");
+    expect(screen.queryByText("¿Quieres conocer nuestro catálogo?")).not.toBeInTheDocument();
   });
 });

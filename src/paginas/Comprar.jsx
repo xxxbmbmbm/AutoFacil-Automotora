@@ -1,22 +1,46 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import EncabezadoPagina from "../componentes/EncabezadoPagina.jsx";
+import AvisoSesionRequerida from "../componentes/AvisoSesionRequerida.jsx";
+import { useSesion } from "../contexto/SesionContext.jsx";
 import { useVehiculos } from "../contexto/VehiculosContext.jsx";
 import { formatearPrecioClp } from "../datos/vehiculos.js";
 
 export default function Comprar() {
   const [params] = useSearchParams();
   const navegar = useNavigate();
-  const { vehiculos } = useVehiculos();
+  const { vehiculos, cargando, recargar } = useVehiculos();
+  const { usuario, api } = useSesion();
   const [validado, setValidado] = useState(false);
+  const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
   const vehiculo = vehiculos.find((v) => v.id === Number(params.get("id")));
 
-  function enviar(e) {
+  // Los datos de la tarjeta solo se validan aquí: nunca se envían al servidor (pago de demostración).
+  async function enviar(e) {
     e.preventDefault();
     setValidado(true);
+    const campos = e.currentTarget.elements;
     if (!e.currentTarget.checkValidity()) return;
-    alert("¡Compra exitosa! Gracias por comprar tu " + vehiculo.marca + " " + vehiculo.modelo + ".");
-    navegar("/vehiculos");
+    setEnviando(true);
+    try {
+      const boleta = await api("ventas", "/boletas", {
+        metodo: "POST",
+        cuerpo: {
+          vehiculoIds: [vehiculo.id],
+          direccion: campos["compra-direccion"].value.trim(),
+          comuna: campos["compra-comuna"].value.trim(),
+          ciudad: campos["compra-ciudad"].value.trim(),
+        },
+      });
+      alert(`Compra exitosa (boleta N° ${boleta.id}). Gracias por comprar tu ${vehiculo.marca} ${vehiculo.modelo}.`);
+      await recargar(); // el vehículo vendido deja de aparecer en la tienda
+      navegar("/vehiculos");
+    } catch (problema) {
+      setError(problema.message);
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -24,7 +48,7 @@ export default function Comprar() {
       <EncabezadoPagina
         etiqueta="Compra"
         titulo="Confirma tu compra"
-        subtitulo="Formulario de demostración: no se procesa ningún pago real ni se guarda información de tarjetas."
+        subtitulo="Formulario de demostración: no se procesa ningún pago real ni se guarda información de tarjetas"
       />
       <section className="franja-seccion pt-4">
         <div className="container">
@@ -34,15 +58,20 @@ export default function Comprar() {
                 {vehiculo ? (
                   <>
                     <h5 className="mb-3">Estás comprando</h5>
-                    <img
-                      src={vehiculo.imagen}
-                      alt={`Foto de ${vehiculo.marca} ${vehiculo.modelo}`}
-                      className="foto-resumen-compra mb-3"
-                    />
+                    <div className="esqueleto marco-resumen mb-3">
+                      <img
+                        src={vehiculo.imagen}
+                        alt={`Foto de ${vehiculo.marca} ${vehiculo.modelo}`}
+                        className="foto-resumen-compra"
+                      />
+                    </div>
                     <p className="marca-modelo mb-1">{vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}</p>
-                    <p className="detalle-vehiculo mb-2">{vehiculo.kilometraje} &middot; {vehiculo.transmision}</p>
+                    <p className="detalle-vehiculo mb-0">{vehiculo.kilometraje} &middot; {vehiculo.transmision}</p>
+                    <div className="corte-ficha" />
                     <p className="precio-vehiculo mb-0">{formatearPrecioClp(vehiculo.precio)}</p>
                   </>
+                ) : cargando ? (
+                  <p className="mb-0">Cargando vehículo…</p>
                 ) : (
                   <>
                     <p className="mb-3">No encontramos el vehículo seleccionado.</p>
@@ -54,6 +83,7 @@ export default function Comprar() {
 
             {vehiculo && (
               <div className="col-lg-7">
+                {usuario ? (
                 <form className={validado ? "was-validated" : ""} onSubmit={enviar} noValidate>
                   <div className="panel-filtros mb-4">
                     <h5 className="mb-3">Dirección de entrega</h5>
@@ -112,9 +142,13 @@ export default function Comprar() {
                         <div className="invalid-feedback">Ingresa el código de seguridad.</div>
                       </div>
                     </div>
-                    <button type="submit" className="boton-principal w-100 mt-4">Confirmar pago</button>
+                    {error && <div className="alert alert-danger py-2 mt-3 mb-0" role="alert">{error}</div>}
+                    <button type="submit" className="boton-principal w-100 mt-4" disabled={enviando}>Confirmar pago</button>
                   </div>
                 </form>
+                ) : (
+                  <div className="panel-filtros"><AvisoSesionRequerida accion="comprar este vehículo" /></div>
+                )}
               </div>
             )}
           </div>
