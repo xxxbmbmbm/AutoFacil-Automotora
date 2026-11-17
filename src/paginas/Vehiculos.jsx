@@ -178,7 +178,7 @@ export default function Vehiculos() {
                   );
                 })}
               </div>
-              {!cargando && filtrados.length === 0 && (
+              {!cargando && !error && filtrados.length === 0 && (
                 <div className="mensaje-sin-resultados" style={{ display: "block" }}>
                   <Icono nombre="buscar" tamano={24} />
                   No encontramos vehículos que coincidan con estos filtros. Prueba cambiando o limpiando los filtros

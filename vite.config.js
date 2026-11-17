@@ -7,6 +7,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.js"],
+    // Los flujos completos escriben muchos campos; en un PC lento 5 s (el valor por defecto) no alcanzan.
+    testTimeout: 15000,
     css: false,
     coverage: {
       provider: "v8",

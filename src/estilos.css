@@ -1268,3 +1268,9 @@ a {
   border-radius: 8px;
   padding: 12px 14px;
 }
+
+/* Dentro de una fila de botones (bandeja, órdenes) el botón eliminar toma su ancho natural */
+.d-flex > .boton-eliminar-vehiculo {
+  width: auto;
+  padding: 0 16px;
+}

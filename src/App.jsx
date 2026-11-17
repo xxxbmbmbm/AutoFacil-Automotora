@@ -29,7 +29,8 @@ export default function App() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.title = titulos[pathname] || titulos["/"];
+    const esDetalle = pathname.startsWith("/vehiculos/");
+    document.title = titulos[pathname] || (esDetalle ? "Detalle del vehículo | AutoFacil" : titulos["/"]);
     window.scrollTo(0, 0);
   }, [pathname]);
 
