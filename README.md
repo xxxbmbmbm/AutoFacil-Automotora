@@ -58,16 +58,18 @@ Cada microservicio tiene su propia base de datos y la misma estructura en capas:
 - El pago es demostrativo: los datos de la tarjeta se validan en pantalla y nunca se envían al servidor.
 - Ninguna clave ni secreto vive en el frontend; los del backend están solo en el `.env` del servidor.
 
-## Despliegue en AWS EC2
+## Despliegue en AWS
 
-El backend corre en una instancia **EC2** (Amazon Linux 2023, t3.medium) del AWS Academy Learner Lab:
+| Pieza | Dónde | Enlace |
+| --- | --- | --- |
+| Frontend | Bucket **S3** con hosting de sitio web estático | http://autofacil-frontend-bastian-espejo.s3-website-us-east-1.amazonaws.com |
+| Reporte de cobertura | Bucket **S3** aparte | http://autofacil-coverage-bastian-espejo.s3-website-us-east-1.amazonaws.com |
+| Backend (4 microservicios + MySQL) | Instancia **EC2** con **IP elástica** | `http://34.234.168.134:8081` a `8084` |
 
-1. Docker, Docker Compose y Buildx instalados en la instancia.
-2. `docker compose up --build -d` levanta MySQL y los 4 microservicios; los contenedores se reinician solos al encender la instancia.
-3. El grupo de seguridad solo abre SSH y los puertos 8081 a 8084 para las IP autorizadas; MySQL no queda expuesto a internet.
-4. El frontend corre en el computador con Vite y apunta a la IP pública de la instancia.
-
-La IP pública cambia cada vez que se reinicia el Learner Lab; basta con actualizarla en `.env.development.local` (ver abajo).
+1. **EC2:** Amazon Linux 2023, t3.medium, con Docker, Docker Compose y Buildx. `docker compose up --build -d` levanta MySQL y los 4 microservicios; los contenedores se reinician solos al encender la instancia.
+2. **IP elástica:** la instancia tiene la IP fija `34.234.168.134`, así que no cambia al reiniciar el Learner Lab y el frontend publicado siempre la encuentra.
+3. **Grupo de seguridad:** los puertos 8081 a 8084 están abiertos para que el navegador de cualquier visitante llegue a la API (las rutas privadas exigen JWT); SSH solo para las IP autorizadas y MySQL no queda expuesto a internet.
+4. **S3:** `npm run build` genera `dist/` con la IP fija ya incluida y se sube al bucket del frontend; `npm run test` genera `coverage/`, que se sube al bucket de cobertura. Ambos buckets tienen lectura pública y `index.html` como documento de inicio (el frontend también lo usa como documento de error, para que las rutas de React funcionen al recargar).
 
 ## Ejecutar el frontend
 
@@ -76,11 +78,10 @@ Requisitos: Node.js 22 o superior.
 ```powershell
 npm install
 Copy-Item .env.development.local.example .env.development.local
-notepad .env.development.local   # reemplazar IP_PUBLICA por la IP de EC2
 npm run dev                      # http://localhost:5173
 ```
 
-Sin `.env.development.local`, la aplicación apunta a un backend local (`http://localhost:8081` a `8084`). Si cambia la IP, reinicia Vite para que la tome.
+El ejemplo ya apunta a la IP elástica de EC2. Sin `.env.development.local`, la aplicación apunta a un backend local (`http://localhost:8081` a `8084`). Para compilar la versión de S3 se usa el mismo contenido en `.env.production.local`.
 
 | Comando | Qué hace |
 | --- | --- |
@@ -92,4 +93,4 @@ Sin `.env.development.local`, la aplicación apunta a un backend local (`http://
 
 **Frontend:** React 19, Vite 8, React Router 7, Bootstrap 5, Vitest y Testing Library.
 **Backend:** Spring Boot 4, Java 21, Spring Data JPA, Spring Security, JWT, Swagger (springdoc-openapi), MySQL 8.
-**Infraestructura:** Docker, Docker Compose, AWS EC2.
+**Infraestructura:** Docker, Docker Compose, AWS EC2 (IP elástica), AWS S3.
